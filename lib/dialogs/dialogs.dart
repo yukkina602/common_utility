@@ -37,6 +37,7 @@ import 'package:flutter/material.dart';
 /// Function()? onConfirm
 /// Function()? onCancel
 /// Function()? onClosing
+/// Color? backgroundColor
 /// ```
 /// 
 Future<void> showCustomDialog(
@@ -73,6 +74,7 @@ Future<void> showCustomDialog(
   Function()? onConfirm,
   Function()? onCancel,
   Function()? onClosing,
+  Color? backgroundColor,
 }) async => await showDialog<AlertDialog>(
   context: context, 
   barrierColor: barrierColor,
@@ -85,6 +87,7 @@ Future<void> showCustomDialog(
     buttonPadding: buttonPadding,
     insetPadding: insetPadding,
     icon: icon,
+    backgroundColor: backgroundColor,
     // テキストの指定がある場合は、Widgetの設定を無視してテキスト表示を優先
     title: titleText != null ? Text(
       titleText,
@@ -178,12 +181,14 @@ Widget _getButtons(
   Function()? onConfirm,
   Function()? onCancel,
   Function()? onClosing,
+  bool? centerActions,
 }) {
   switch (type) {
     case DialogTypes.info:
     case DialogTypes.error:
       return Container(
         color: Colors.transparent,
+        alignment: centerActions ?? false ? Alignment.center : null,
         child: ElevatedButton(
           onPressed: onClosing ?? () => Navigator.pop(context), 
           style: closeButtonStyle ?? ElevatedButton.styleFrom(
