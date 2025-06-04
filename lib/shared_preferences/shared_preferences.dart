@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// SharedPreferencesの操作
 /// 
-class AppDataController {
+class SharedDatas {
   /// SharedPreferencesのインスタンスを取得
   /// 
   /// ### Return
