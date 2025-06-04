@@ -75,6 +75,7 @@ Future<void> showCustomDialog(
   Function()? onCancel,
   Function()? onClosing,
   Color? backgroundColor,
+  bool? centerActions,
 }) async => await showDialog<AlertDialog>(
   context: context, 
   barrierColor: barrierColor,
@@ -124,6 +125,7 @@ Future<void> showCustomDialog(
         onConfirm: onConfirm,
         onCancel: onCancel,
         onClosing: onClosing,
+        centerActions: centerActions,
       )],
   ),
 );
