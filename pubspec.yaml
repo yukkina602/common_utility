@@ -1,7 +1,7 @@
 name: common_utility
 description: "A new Flutter package project."
+publish_to: none
 version: 0.0.1
-homepage:
 
 environment:
   sdk: ^3.8.1
@@ -25,7 +25,7 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
-flutter:
+# flutter:
 
   # To add assets to your package, add an assets section, like this:
   # assets:
