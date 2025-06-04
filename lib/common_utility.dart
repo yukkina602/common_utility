@@ -2,7 +2,7 @@
 library common_utility;
 
 export 'qr_barcode_scanner/qr_barcode_scanner.dart';
-export 'shared_preferences/shared_preferences.dart';
+export 'shared_preferences/shared_datas.dart';
 export 'dialogs/dialogs.dart';
 export 'size/size.dart';
 export 'database/mysql_for_http.dart';
