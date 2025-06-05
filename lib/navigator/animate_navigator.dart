@@ -1,4 +1,6 @@
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 /// 画面遷移のアニメーション
 /// 
@@ -311,6 +313,47 @@ class AnimateNavigator {
           child: child,
         );
       },
+    );
+  }
+
+  /// スプラッシュスクリーン表示での遷移
+  /// 
+  /// ### Parameter
+  /// ```dart
+  /// String imgFile
+  /// Widget page
+  /// double? imgSize
+  /// BoxFit? imgFit
+  /// Color? backgroundColor
+  /// SplashTransition? transition
+  /// PageTransitionType? transType
+  /// int? animateDuration
+  /// ```
+  /// 
+  /// ### Return
+  /// Type: `AnimatedSplashScreen`
+  /// 
+  static AnimatedSplashScreen splash({
+    required String imgFile,
+    required Widget page,
+    double? imgSize,
+    BoxFit? imgFit,
+    Color? backgroundColor,
+    SplashTransition? transition,
+    PageTransitionType? transType,
+    int? animateDuration,
+  }) {
+    return AnimatedSplashScreen(
+      splash: Image.asset(
+        imgFile, 
+        fit: imgFit ?? BoxFit.fill,
+      ),
+      splashIconSize: imgSize ?? 200,
+      nextScreen: page,
+      backgroundColor: backgroundColor ?? Colors.white,
+      splashTransition: transition ?? SplashTransition.slideTransition,
+      pageTransitionType: transType ?? PageTransitionType.fade,
+      animationDuration: Duration(milliseconds: animateDuration ?? 1000),
     );
   }
 }
