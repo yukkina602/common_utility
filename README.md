@@ -14,8 +14,11 @@ platform :ios, '14.0'
 
 ## Firebase
 Check on this package.
+
 Firebase Auth: https://pub.dev/packages/firebase_auth
+
 Firebase Messaging: https://pub.dev/packages/firebase_messaging
+
 Firebase Remote Config: https://pub.dev/packages/firebase_remote_config
 
 ## When use camera on android (USB keyboard input)
