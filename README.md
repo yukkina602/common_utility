@@ -15,7 +15,7 @@ platform :ios, '14.0'
 ## Firebase
 Check on this package.
 
-Firebase Auth: https://pub.dev/packages/firebase_auth
+Firebase Auth: <a href="https://pub.dev/packages/firebase_auth" target="_blank" rel="nooperer">https://pub.dev/packages/firebase_auth</a>
 
 Firebase Messaging: https://pub.dev/packages/firebase_messaging
 
