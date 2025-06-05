@@ -5,6 +5,7 @@ export 'billing/stripe_utility.dart';
 export 'database/mysql_for_http.dart';
 export 'dialogs/dialogs.dart';
 export 'firebase/firebase.dart';
+export 'http/webpage_controller.dart';
 export 'localization/global_localizations.dart';
 export 'navigator/animate_navigator.dart';
 export 'navigator/navigation.dart';
