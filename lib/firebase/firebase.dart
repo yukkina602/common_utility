@@ -185,6 +185,8 @@ class Firebase {
   /// 
   /// ### Parameter
   /// ```dart
+  /// String key
+  /// RemoteConfigType type
   /// ```
   /// 
   /// ### Return
