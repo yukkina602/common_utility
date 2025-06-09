@@ -17,7 +17,7 @@ class WebpageController {
   /// int? windowHeight
   /// ```
   /// 
-  static openNewWindow({
+  static void openNewWindow({
     required String url,
     int? windowWidth,
     int? windowHeight,
