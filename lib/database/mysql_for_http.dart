@@ -288,55 +288,33 @@ class MySQLForHTTP {
     }
   }
 
-  /// トランザクションの開始
-  ///
-  /// ### Patameter
-  /// ```dart
-  /// String url "リクエストURL" @required
-  /// ```
-  ///
-  /// ### Return
-  /// Type: `bool` 
-  /// ```dart
-  /// @true "正常終了"
-  /// ```
-  ///
-  static Future<bool> beginTransaction({required String url}) async {
-    try {
-      // アクセス先にPOSTしてデータを受け取る
-      var response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({}),
-      );
+  /// 
+  /// 
+  static Future<bool> multipleQuery({
+    required String url, 
+    required List<String> queries,
+    List<List<Object?>?>? values,
+  }) async {
+    var parameters = <int, String>{};
 
-      if (response.statusCode == 505) {
-        debugPrint("Transaction start Error - ${response.body}");
-        return false; // 異常
-      } else {
-        return true; // 正常
+    if (values != null) {
+      var index = 0;
+      for (var row in values) {
+        if (row == null || row.isEmpty) {
+          parameters.addAll({index : ""});
+          index++;
+          continue;
+        }
+
+        var param = "";
+        for (var value in row) {
+          param += param == "" ? "$value" : ",$value";
+        }
+        parameters.addAll({index : param});
+        index++;
       }
-    } catch (e) {
-      throw Exception(e);
     }
-  }
 
-  /// トランザクションの開始
-  ///
-  /// ### Patameter
-  /// ```dart
-  /// String url "リクエストURL" @required
-  /// ```
-  ///
-  /// ### Return
-  /// Type: `bool` 
-  /// ```dart
-  /// @true "正常終了"
-  /// ```
-  ///
-  static Future<bool> commit({required String url}) async {
     try {
       // アクセス先にPOSTしてデータを受け取る
       var response = await http.post(
@@ -344,46 +322,14 @@ class MySQLForHTTP {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({}),
+        body: jsonEncode({
+          "query": queries,
+          "parameters": parameters,
+        }),
       );
 
       if (response.statusCode == 505) {
-        debugPrint("Transaction start Error - ${response.body}");
-        return false; // 異常
-      } else {
-        return true; // 正常
-      }
-    } catch (e) {
-      throw Exception(e);
-    }
-  }
-
-  /// トランザクションの開始
-  ///
-  /// ### Patameter
-  /// ```dart
-  /// String url "リクエストURL" @required
-  /// ```
-  ///
-  /// ### Return
-  /// Type: `bool` 
-  /// ```dart
-  /// @true "正常終了"
-  /// ```
-  ///
-  static Future<bool> rollback({required String url}) async {
-    try {
-      // アクセス先にPOSTしてデータを受け取る
-      var response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({}),
-      );
-
-      if (response.statusCode == 505) {
-        debugPrint("Transaction start Error - ${response.body}");
+        debugPrint("Multiple query Error - ${response.body}");
         return false; // 異常
       } else {
         return true; // 正常
