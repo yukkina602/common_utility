@@ -23,7 +23,7 @@ class MySQLForHTTP {
   /// ### Reference
   /// `■ Single data`
   /// ```dart
-  /// var result = await MySQLCtrl.select(
+  /// var result = await MySQLForHTTP.select(
   ///   url: "https://www.example.com/get/data",
   ///   query: "select * from users where id = ?",
   ///   values: [ 1 ],
@@ -37,7 +37,7 @@ class MySQLForHTTP {
   ///
   /// `■ Multi row data`
   /// ```dart
-  /// var result = await MySQLCtrl.select(
+  /// var result = await MySQLForHTTP.select(
   ///   url: "https://www.example.com/get/data",
   ///   query: "select * from users where id <> ?",
   ///   values: [ 1 ],
@@ -302,7 +302,18 @@ class MySQLForHTTP {
   /// @true "正常終了"
   /// ```
   /// 
-  static Future<bool> executeURLOnly({required String url, Map<String, Object?>? values}) async {
+  /// ### Reference
+  /// ```dart
+  /// await MySQLForHTTP.executeURLOnly(
+  ///   url: "https://hoge.com/query/test",
+  ///   values: {
+  ///     "name": "HOGE",
+  ///     "name-2": "FUGA",
+  ///   }
+  /// );
+  /// ```
+  /// 
+  static Future<bool> postURL({required String url, Map<String, Object?>? values}) async {
     try {
       // アクセス先にPOSTしてデータを受け取る
       var response = await http.post(
@@ -314,7 +325,7 @@ class MySQLForHTTP {
       );
 
       if (response.statusCode == 505) {
-        debugPrint("Multiple query Error - ${response.body}");
+        debugPrint("Error on execute query in only url access. => ${response.body}");
         return false; // 異常
       } else {
         return true; // 正常
