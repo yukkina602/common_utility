@@ -288,33 +288,21 @@ class MySQLForHTTP {
     }
   }
 
+  /// URLとパラメータのみでクエリを実行
   /// 
+  /// ### Parameter
+  /// ```dart
+  /// String url "リクエストURL" @required
+  /// Map<String, Object?>? value "パラメータ"
+  /// ```
+  ///
+  /// ### Return
+  /// Type: `bool` 
+  /// ```dart
+  /// @true "正常終了"
+  /// ```
   /// 
-  static Future<bool> multipleQuery({
-    required String url, 
-    required List<String> queries,
-    List<List<Object?>?>? values,
-  }) async {
-    var parameters = <int, String>{};
-
-    if (values != null) {
-      var index = 0;
-      for (var row in values) {
-        if (row == null || row.isEmpty) {
-          parameters.addAll({index : ""});
-          index++;
-          continue;
-        }
-
-        var param = "";
-        for (var value in row) {
-          param += param == "" ? "$value" : ",$value";
-        }
-        parameters.addAll({index : param});
-        index++;
-      }
-    }
-
+  static Future<bool> executeURLOnly({required String url, Map<String, Object?>? values}) async {
     try {
       // アクセス先にPOSTしてデータを受け取る
       var response = await http.post(
@@ -322,10 +310,7 @@ class MySQLForHTTP {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-          "query": queries,
-          "parameters": parameters,
-        }),
+        body: jsonEncode(values),
       );
 
       if (response.statusCode == 505) {
