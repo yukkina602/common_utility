@@ -3,9 +3,152 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-/// MySQL control for HTTP access
+/// HTTPアクセスでMySQLを操作するクラス 
+/// (MySQL control for HTTP access.)
+///
+/// ### Todo 
+/// This class is MySQL controller.
+/// 
+/// ### Use
+/// Use in enviroment backend of `Laravel`. 
+/// 
+/// ---
+/// このクラスを利用する場合は、バックエンドを`Laravel`で構築することを推奨します。
+/// 
 /// 
 class MySQLForHTTP {
+  /// POSTしてデータを取得 (URL Post)
+  ///
+  /// ### Parameter
+  /// ```dart
+  /// String url "リクエストURL" @required
+  /// Object? value "条件"
+  /// ```
+  ///
+  /// ### Return
+  /// Type: `List<Map<String, dynamic>>` 
+  /// 
+  /// SELECTクエリの実行結果
+  ///
+  /// ### Reference
+  /// `■ Single data`
+  /// ```dart
+  /// var result = await MySQLForHTTP.postSelect(
+  ///   url: "https://www.example.com/get/data",
+  ///   values: { "hoge": 1 },
+  /// );
+  ///
+  /// if (result.isNotEmpty) {
+  ///   var id = int.parse("${result.first["id"]}");
+  ///   var name = "${result.first["name"]}";
+  /// }
+  /// ```
+  ///
+  /// `■ Multi row data`
+  /// ```dart
+  /// var result = await MySQLForHTTP.postSelect(
+  ///   url: "https://www.example.com/get/data",
+  ///   values: { "hoge": 1 },
+  /// );
+  ///
+  /// for (var row in result) {
+  ///   var id = int.parse("${row["id"]}");
+  ///   var name = "${row["name"]}";
+  /// }
+  /// ```
+  ///
+  static Future<List<Map<String, dynamic>>> postSelect({required String url, Map<String, Object?>? values}) async {
+    var resultMap = <Map<String, dynamic>>[];
+
+    try {
+      // アクセス先にPOSTしてデータを受け取る
+      var response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(values),
+      );
+
+      if (response.statusCode == 505) {
+        throw Exception("Select query Error - ${response.body}");
+      }
+
+      var getData = jsonDecode(response.body) as List;
+
+      // 取得したデータをアクセスしやすい形に変換
+      for (var data in getData) {
+        var dataMap = data as Map<dynamic, dynamic>;
+        var addData = <String, dynamic>{};
+        dataMap.forEach((key, value) {
+          addData.addAll({
+            "$key": value,
+          });
+        });
+
+        resultMap.add(addData);
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+
+    return resultMap;
+  }
+
+  /// URLとパラメータのみでクエリを実行
+  /// 
+  /// ### Parameter
+  /// ```dart
+  /// String url "リクエストURL" @required
+  /// Map<String, Object?>? value "パラメータ"
+  /// ```
+  ///
+  /// ### Return
+  /// Type: `bool` 
+  /// ```dart
+  /// @true "正常終了"
+  /// ```
+  /// 
+  /// ### Reference
+  /// ```dart
+  /// await MySQLForHTTP.postURL(
+  ///   url: "https://hoge.com/query/test",
+  ///   values: {
+  ///     "name": "HOGE",
+  ///     "name-2": "FUGA",
+  ///   }
+  /// );
+  /// ```
+  /// 
+  /// ---
+  /// Insertした後に別のテーブルにInsertや、
+  /// 複数のテーブルをUpdateする際などに、
+  /// こちらのメソッドを利用することで、
+  /// 同一の`Transaction`内でクエリを実行できるように、
+  /// バックエンドを構築する。
+  /// 
+  static Future<bool> postURL({required String url, Map<String, Object?>? values}) async {
+    try {
+      // アクセス先にPOSTしてデータを受け取る
+      var response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(values),
+      );
+
+      if (response.statusCode == 505) {
+        debugPrint("Error on execute query in only url access. => ${response.body}");
+        return false; // 異常
+      } else {
+        return true; // 正常
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   /// データベースからデータを取得 (URL Post)
   ///
   /// ### Parameter
@@ -279,53 +422,6 @@ class MySQLForHTTP {
 
       if (response.statusCode == 505) {
         debugPrint("Delete query Error - ${response.body}");
-        return false; // 異常
-      } else {
-        return true; // 正常
-      }
-    } catch (e) {
-      throw Exception(e);
-    }
-  }
-
-  /// URLとパラメータのみでクエリを実行
-  /// 
-  /// ### Parameter
-  /// ```dart
-  /// String url "リクエストURL" @required
-  /// Map<String, Object?>? value "パラメータ"
-  /// ```
-  ///
-  /// ### Return
-  /// Type: `bool` 
-  /// ```dart
-  /// @true "正常終了"
-  /// ```
-  /// 
-  /// ### Reference
-  /// ```dart
-  /// await MySQLForHTTP.executeURLOnly(
-  ///   url: "https://hoge.com/query/test",
-  ///   values: {
-  ///     "name": "HOGE",
-  ///     "name-2": "FUGA",
-  ///   }
-  /// );
-  /// ```
-  /// 
-  static Future<bool> postURL({required String url, Map<String, Object?>? values}) async {
-    try {
-      // アクセス先にPOSTしてデータを受け取る
-      var response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(values),
-      );
-
-      if (response.statusCode == 505) {
-        debugPrint("Error on execute query in only url access. => ${response.body}");
         return false; // 異常
       } else {
         return true; // 正常
